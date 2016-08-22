@@ -15,8 +15,6 @@
 #include <QDebug>
 #include <iostream>
 
-
-
 //default values for co-ordinates and frame rate and co-ordinates
 #define MAX_TOP_LEFT_X                1023
 #define MAX_TOP_LEFT_Y                765
@@ -76,7 +74,7 @@ typedef struct
 }Gst;
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -86,8 +84,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-     Gst* gst = NULL;
-     int flag = 1;
+    Gst* gst = NULL;
+    int flag = 1;
 
 private slots:
 

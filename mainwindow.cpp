@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->ComboBoxFPS->addItem("30");
     ui->ComboBoxFPS->addItem("35");
 
-
     ui->ComboBoxContainerFormat->addItem("AVI");
     ui->ComboBoxContainerFormat->addItem("MP4");
 
@@ -28,23 +27,21 @@ MainWindow::MainWindow(QWidget *parent) :
     /*QTimer* timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(showTime()));
     timer->start();*/
-
-
 }
 
 MainWindow::~MainWindow()
 {
     if(gst)
     {
-       if(gst->qtVars)
-       {
-           if( gst->qtVars->containerFormat)
-             delete[] gst->qtVars->containerFormat;
-           if( gst->qtVars->encoderType )
-               delete[] gst->qtVars->encoderType;
-           delete[] gst->qtVars;
-       }
-       delete[] gst;
+        if(gst->qtVars)
+        {
+            if( gst->qtVars->containerFormat)
+                delete[] gst->qtVars->containerFormat;
+            if( gst->qtVars->encoderType )
+                delete[] gst->qtVars->encoderType;
+            delete[] gst->qtVars;
+        }
+   delete[] gst;
     }
     delete ui;
 }
@@ -64,33 +61,30 @@ void MainWindow::allocateMemory()
 
 void MainWindow::on_ComboBoxContainerFormat_currentIndexChanged()
 {
-
     qDebug()<<ui->ComboBoxContainerFormat->currentText();
 
-     allocateMemory();
+    allocateMemory();
 
-     QByteArray inBytes;
-     const char *cStrData;
+    QByteArray inBytes;
+    const char *cStrData;
 
-     inBytes = ui->ComboBoxContainerFormat->currentText().toUtf8();
-     cStrData = inBytes.constData();
+    inBytes = ui->ComboBoxContainerFormat->currentText().toUtf8();
+    cStrData = inBytes.constData();
 
     qDebug()<<"str" <<cStrData;
     strcpy( gst->qtVars->containerFormat, cStrData );
     qDebug() << "filelocation %s" << gst->qtVars->containerFormat;
 }
 
-
 void MainWindow::on_ComboBoxEncoderFormat_currentIndexChanged()
 {
-
     allocateMemory();
 
-     QByteArray inBytes;
-     const char *cStrData;
+    QByteArray inBytes;
+    const char *cStrData;
 
-     inBytes = ui->ComboBoxEncoderFormat->currentText().toUtf8();
-     cStrData = inBytes.constData();
+    inBytes = ui->ComboBoxEncoderFormat->currentText().toUtf8();
+    cStrData = inBytes.constData();
 
     qDebug()<<"str" <<cStrData;
     strcpy( gst->qtVars->encoderType, cStrData );
@@ -106,10 +100,10 @@ void MainWindow::on_ComboBoxFPS_currentTextChanged()
     inBytes = ui->ComboBoxFPS->currentText().toUtf8();
     cStrData = inBytes.constData();
 
-   qDebug()<<"str" <<cStrData;
+    qDebug()<<"str" <<cStrData;
 
-   gst->qtVars->fps = atoi(cStrData);
-   qDebug() <<"Fps = "<<gst->qtVars->fps;
+    gst->qtVars->fps = atoi(cStrData);
+    qDebug() <<"Fps = "<<gst->qtVars->fps;
 
 }
 
@@ -124,13 +118,13 @@ void MainWindow::on_ButtonFileSelect_clicked()
     inBytes = filename.toUtf8();
     cStrData = inBytes.constData();
 
-   qDebug()<<"str" <<cStrData;
-   strcpy(gst->fileLocation, cStrData);
-   ui->lineEdit_5->setText(cStrData);
+    qDebug()<<"str" <<cStrData;
+    strcpy(gst->fileLocation, cStrData);
+    ui->lineEdit_5->setText(cStrData);
 }
+
 void  MainWindow::showTime()
 {
-    //QString time_text = ui->dateTimeEdit->time().toString("hh : mm : ss");
     long long int hour = (( ui->dateTimeEdit->time().hour() )* 3600 * 1000 );
     long long int min  = ((ui->dateTimeEdit->time().minute() )*60*1000);
     long long int sec  = ((ui->dateTimeEdit->time().second())*1000);
@@ -142,10 +136,7 @@ void  MainWindow::showTime()
     time_text = ( hour + min + sec )- ui->dateTimeEdit->time().elapsed();
     qDebug()<<"Time Text :" <<time_text;
     if( time_text == 0 )
-           flag = 0;
-
-   // ui->lineEdit_time->setText();
-
+        flag = 0;
 }
 
 void MainWindow::on_ButtonStart_clicked()
@@ -161,32 +152,28 @@ void MainWindow::on_ButtonStart_clicked()
     inBytes = ui->LineEditTopX->text().toUtf8();
     cStrData = inBytes.constData();
 
-   qDebug()<<"Your X coordinate : " <<cStrData;
-   gst->qtVars->topLeftX = atoi(cStrData);
-   qDebug() << "TopLeftX coordinate : "<<gst->qtVars->topLeftX;
+    qDebug()<<"Your X coordinate : " <<cStrData;
+    gst->qtVars->topLeftX = atoi(cStrData);
+    qDebug() << "TopLeftX coordinate : "<<gst->qtVars->topLeftX;
 
+    inBytes = ui->lineEdit_3->text().toUtf8();
+    cStrData = inBytes.constData();
+    qDebug()<<"Your Y coordinate : " <<cStrData;
+    gst->qtVars->topLeftY = atoi(cStrData);
+    qDebug() << "TopLeftY coordinate : "<<gst->qtVars->topLeftY;
 
-   inBytes = ui->lineEdit_3->text().toUtf8();
-   cStrData = inBytes.constData();
-   qDebug()<<"Your Y coordinate : " <<cStrData;
-   gst->qtVars->topLeftY = atoi(cStrData);
-   qDebug() << "TopLeftY coordinate : "<<gst->qtVars->topLeftY;
+    inBytes = ui->lineEdit_2->text().toUtf8();
+    cStrData = inBytes.constData();
+    qDebug()<<"Heigth : " <<cStrData;
+    gst->qtVars->height = atoi(cStrData);
+    qDebug() << "Heigth : "<<gst->qtVars->height;
 
+    inBytes = ui->lineEdit_4->text().toUtf8();
+    cStrData = inBytes.constData();
+    qDebug()<<"Width: " <<cStrData;
+    gst->qtVars->width = atoi(cStrData);
+    qDebug() << "Width : "<<gst->qtVars->width;
 
-   inBytes = ui->lineEdit_2->text().toUtf8();
-   cStrData = inBytes.constData();
-   qDebug()<<"Heigth : " <<cStrData;
-   gst->qtVars->height = atoi(cStrData);
-   qDebug() << "Heigth : "<<gst->qtVars->height;
-
-   inBytes = ui->lineEdit_4->text().toUtf8();
-   cStrData = inBytes.constData();
-   qDebug()<<"Width: " <<cStrData;
-   gst->qtVars->width = atoi(cStrData);
-   qDebug() << "Width : "<<gst->qtVars->width;
-
-
-    //ui->dateTimeEdit->time().start();
     gst->timer = new QTimer(this);
     connect(gst->timer, SIGNAL(timeout()), this, SLOT(showTime()));
     gst->timer->start();
@@ -201,7 +188,7 @@ void MainWindow::on_ButtonStart_clicked()
 void MainWindow::on_ButtonStop_clicked()
 {
     //stop pipeline here
-     qDebug()<<"stop pressed";
+    qDebug()<<"stop pressed";
     ui->ButtonStop->setDisabled(true);
     ui->ButtonStart->setEnabled(true);
 
@@ -287,37 +274,37 @@ int MainWindow::state_handler( Gst* gst, GstState state )
 
 static gboolean my_bus_callback( GstBus* bus, GstMessage *message, gpointer data )
 {
-   Gst* gst = ( Gst* ) data;
-   switch( GST_MESSAGE_TYPE (message) )
-   {
-     case GST_MESSAGE_ERROR:
-     {
-       GST_DEBUG ("\nGot %s message\n", GST_MESSAGE_TYPE_NAME (message));
-       GError *err;
-       gchar *debug;
-       gst_message_parse_error( message, &err, &debug );
-       GST_DEBUG ("\nError: %s\n", err->message);
-       g_error_free (err);
-       g_free (debug);
-       g_main_loop_quit ( gst->loop );
-       break;
-     }
-     case GST_MESSAGE_EOS:
-     {
-       GST_DEBUG ("\nGot %s message\n", GST_MESSAGE_TYPE_NAME (message));
-       /* end-of-stream */
-       g_main_loop_quit ( gst->loop );
-       break;
-     }
-     default:
-       /* unhandled message */
-       break;
-  }
-  /* we want to be notified again the next time there is a message
+    Gst* gst = ( Gst* ) data;
+    switch( GST_MESSAGE_TYPE (message) )
+    {
+        case GST_MESSAGE_ERROR:
+        {
+            GST_DEBUG ("\nGot %s message\n", GST_MESSAGE_TYPE_NAME (message));
+            GError *err;
+            gchar *debug;
+            gst_message_parse_error( message, &err, &debug );
+            GST_DEBUG ("\nError: %s\n", err->message);
+            g_error_free (err);
+            g_free (debug);
+            g_main_loop_quit ( gst->loop );
+            break;
+        }
+        case GST_MESSAGE_EOS:
+        {
+            GST_DEBUG ("\nGot %s message\n", GST_MESSAGE_TYPE_NAME (message));
+            /* end-of-stream */
+            g_main_loop_quit ( gst->loop );
+            break;
+        }
+        default:
+            /* unhandled message */
+            break;
+    }
+    /* we want to be notified again the next time there is a message
     * on the bus, so returning TRUE (FALSE means we want to stop watching
     * for messages on the bus and our callback should not be called again)
     */
-  return TRUE;
+    return TRUE;
 }
 
 int MainWindow::create_elements( Gst* gst, char* location )
@@ -335,7 +322,6 @@ int MainWindow::create_elements( Gst* gst, char* location )
             return -1;
         }
     }
-
 
     /* Create gstreamer elements */
     if (!gst->pipeline)
@@ -492,60 +478,59 @@ int MainWindow::bus_watcher( Gst* gst )
 /* This is a callback function. */
 int MainWindow::stop_pipeline( gpointer   data )
 {
-        Gst* gst = ( Gst* ) data;
-        double difft = 0;
+    Gst* gst = ( Gst* ) data;
+    double difft = 0;
 
-        g_print ("Stop Recording ...\n");
+    g_print ("Stop Recording ...\n");
 
-        /* take the current time end time */
-        time (&gst->t_end);
+    /* take the current time end time */
+    time (&gst->t_end);
 
-        /* calculate time spent */
-        difft = difftime (gst->t_end,gst->t_start);
-        gst->t_end=0;
-        g_print ("Total time = %f seconds\n", difft);
+    /* calculate time spent */
+    difft = difftime (gst->t_end,gst->t_start);
+    gst->t_end=0;
+    g_print ("Total time = %f seconds\n", difft);
 
-        if( state_handler( gst, GST_STATE_NULL) !=0 )
-                return -1;
-        g_main_loop_quit ( gst->loop );
-        return 0;
+    if( state_handler( gst, GST_STATE_NULL) !=0 )
+        return -1;
+    g_main_loop_quit ( gst->loop );
+    return 0;
 }
 
 int MainWindow::start_pipeline( gpointer   data )
 {
 
-    //thred creation
+    Gst* gst = ( Gst* ) data;
+    char loc[] = "D:\\test.avi";
 
-        Gst* gst = ( Gst* ) data;
-        char loc[] = "D:\\test.avi";
-        /* Initialize elements */
-        if( create_elements( gst, loc) != 0 )
-                return -1;
+    /* Initialize elements */
+    if( create_elements( gst, loc) != 0 )
+        return -1;
 
-        /* Add function to watch bus */
-        if( bus_watcher( gst ) != 0 )
-                return -1;
+    /* Add function to watch bus */
+    if( bus_watcher( gst ) != 0 )
+        return -1;
 
-        /* Add elements to pipeline, and link them */
-        if( pipeline_make( gst ) != 0 )
-                return -1;
+    /* Add elements to pipeline, and link them */
+    if( pipeline_make( gst ) != 0 )
+        return -1;
 
-        /* Set the pipeline to "playing" state*/
-        if( state_handler( gst, GST_STATE_PLAYING) !=0 )
-                return -1;
+    /* Set the pipeline to "playing" state*/
+    if( state_handler( gst, GST_STATE_PLAYING) !=0 )
+        return -1;
 
-        /* take the current time start time */
-        time (&gst->t_start);
+    /* take the current time start time */
+    time (&gst->t_start);
 
-        /* To obtain .dot files, set the GST_DEBUG_DUMP_DOT_DIR environment
-        variable to point to the folder where you want the files to be placed. */
+    /* To obtain .dot files, set the GST_DEBUG_DUMP_DOT_DIR environment
+    variable to point to the folder where you want the files to be placed. */
 
-        GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS (GST_BIN(gst->pipeline),
-            GST_DEBUG_GRAPH_SHOW_ALL, "gstcapture-1.0-playing");
+    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS (GST_BIN(gst->pipeline),
+    GST_DEBUG_GRAPH_SHOW_ALL, "gstcapture-1.0-playing");
 
-        g_print ("Start Recording ...\n");
-        g_main_loop_run ( gst->loop);
+    g_print ("Start Recording ...\n");
+    g_main_loop_run ( gst->loop);
 
-        return 0;
+    return 0;
 }
 
