@@ -73,7 +73,7 @@ void MainWindow::on_ComboBoxContainerFormat_currentIndexChanged()
 
     qDebug()<<"str" <<cStrData;
     strcpy( gst->qtVars->containerFormat, cStrData );
-    qDebug() << "filelocation %s" << gst->qtVars->containerFormat;
+    //qDebug() << "filelocation %s" << gst->qtVars->containerFormat;
 }
 
 void MainWindow::on_ComboBoxEncoderFormat_currentIndexChanged()
@@ -129,12 +129,12 @@ void  MainWindow::showTime()
     long long int min  = ((ui->dateTimeEdit->time().minute() )*60*1000);
     long long int sec  = ((ui->dateTimeEdit->time().second())*1000);
 
-    qDebug() << "hour : " <<hour;
-    qDebug() << "min : " << min;
-    qDebug() << "secs : " << sec;
+    //qDebug() << "hour : " <<hour;
+    //qDebug() << "min : " << min;
+    //qDebug() << "secs : " << sec;
     long long int time_text;
     time_text = ( hour + min + sec )- ui->dateTimeEdit->time().elapsed();
-    qDebug()<<"Time Text :" <<time_text;
+    //qDebug()<<"Time Text :" <<time_text;
     if( time_text == 0 )
         flag = 0;
 }
@@ -182,6 +182,7 @@ void MainWindow::on_ButtonStart_clicked()
         gst->timer->stop();
         stop_pipeline(gst);
     }
+    qDebug()<<"calling start pipeline";
     start_pipeline( gst );
 }
 
@@ -212,38 +213,38 @@ int MainWindow::state_handler( Gst* gst, GstState state )
         ret = gst_element_set_state( gst->source, GST_STATE_PAUSED );
         if( ret == GST_STATE_CHANGE_FAILURE )
         {
-            GST_DEBUG ("failed to change state ret = %d\n",ret);
+            qDebug()<<"failed to change state ret = " <<ret;
             return -1;
         }
         ret = gst_element_set_state ( gst->source, GST_STATE_READY);
         if( ret == GST_STATE_CHANGE_FAILURE )
         {
-            GST_DEBUG ("failed to change state ret = %d\n",ret);
+            qDebug()<<"failed to change state ret = "<< ret;
             return -1;
         }
         ret = gst_element_set_state( gst->source, GST_STATE_NULL );
         if( ret == GST_STATE_CHANGE_FAILURE )
         {
-            GST_DEBUG ("failed to change state ret = %d\n",ret);
+            qDebug()<<"failed to change state ret = "<<ret;
             return -1;
         }
 
         ret = gst_element_set_state( gst->pipeline, GST_STATE_PAUSED );
         if( ret == GST_STATE_CHANGE_FAILURE )
         {
-            GST_DEBUG ("failed to change state ret = %d\n",ret);
+            qDebug()<<"failed to change state ret = "<<ret;
             return -1;
         }
         ret = gst_element_set_state( gst->pipeline, GST_STATE_READY);
         if( ret == GST_STATE_CHANGE_FAILURE )
         {
-            GST_DEBUG ("failed to change state ret = %d\n",ret);
+            qDebug()<<"failed to change state ret = "<<ret;
             return -1;
         }
         ret = gst_element_set_state( gst->pipeline, GST_STATE_NULL );
         if( ret == GST_STATE_CHANGE_FAILURE )
         {
-            GST_DEBUG ("failed to change state ret = %d\n",ret);
+            qDebug()<<"failed to change state ret = "<<ret;
             return -1;
         }
     }
@@ -253,19 +254,19 @@ int MainWindow::state_handler( Gst* gst, GstState state )
         ret = gst_element_set_state ( gst->pipeline, GST_STATE_READY);
         if (ret == GST_STATE_CHANGE_FAILURE)
         {
-            GST_DEBUG ("failed to change state ret = %d\n",ret);
+            qDebug()<<"failed to change state ret = "<<ret;
             return -1;
         }
         ret = gst_element_set_state ( gst->pipeline, GST_STATE_PAUSED);
         if (ret == GST_STATE_CHANGE_FAILURE)
         {
-            GST_DEBUG ("failed to change state ret = %d\n",ret);
+            qDebug()<<"failed to change state ret = "<<ret;
             return -1;
         }
         ret = gst_element_set_state ( gst->pipeline, GST_STATE_PLAYING);
         if (ret == GST_STATE_CHANGE_FAILURE)
         {
-            GST_DEBUG ("failed to change state ret = %d\n",ret);
+            qDebug()<<"failed to change state ret = "<<ret;
             return -1;
         }
     }
@@ -274,26 +275,23 @@ int MainWindow::state_handler( Gst* gst, GstState state )
 
 static gboolean my_bus_callback( GstBus* bus, GstMessage *message, gpointer data )
 {
-    Gst* gst = ( Gst* ) data;
     switch( GST_MESSAGE_TYPE (message) )
     {
         case GST_MESSAGE_ERROR:
         {
-            GST_DEBUG ("\nGot %s message\n", GST_MESSAGE_TYPE_NAME (message));
+            qDebug()<<"\nGot message"<<GST_MESSAGE_TYPE_NAME (message);
             GError *err;
             gchar *debug;
             gst_message_parse_error( message, &err, &debug );
-            GST_DEBUG ("\nError: %s\n", err->message);
+            qDebug()<<"\nError: "<< err->message;
             g_error_free (err);
             g_free (debug);
-            g_main_loop_quit ( gst->loop );
             break;
         }
         case GST_MESSAGE_EOS:
         {
-            GST_DEBUG ("\nGot %s message\n", GST_MESSAGE_TYPE_NAME (message));
+            qDebug()<<"\nGot message"<<GST_MESSAGE_TYPE_NAME (message);
             /* end-of-stream */
-            g_main_loop_quit ( gst->loop );
             break;
         }
         default:
@@ -314,7 +312,7 @@ int MainWindow::create_elements( Gst* gst, char* location )
 
     if ( location == NULL )
     {
-        GST_DEBUG ("\nAllocating memory to location\n");
+        qDebug()<<"\nAllocating memory to location";
         location = ( char*)malloc(100);
         if( location == NULL )
         {
@@ -326,19 +324,19 @@ int MainWindow::create_elements( Gst* gst, char* location )
     /* Create gstreamer elements */
     if (!gst->pipeline)
     {
-        GST_DEBUG ("\nCreating pipeline\n");
+        qDebug()<<"\nCreating pipeline";
         gst->pipeline = gst_pipeline_new( "pipeline" );
     }
 
     if (!gst->source)
     {
-        GST_DEBUG ("\nCreating source\n");
+        qDebug()<<"\nCreating source";
         gst->source = gst_element_factory_make( "gdiscreencapsrc",    "videotestsrc" );
     }
 
     if (!gst->filter)
     {
-        GST_DEBUG ("\nCreating filter\n");
+        qDebug()<<"\nCreating filter";
         gst->filter = gst_element_factory_make( "capsfilter", "filter" );
         /* Set up elements */
         g_object_set( G_OBJECT ( gst->filter ), "caps", gst->video_caps, NULL );
@@ -346,7 +344,7 @@ int MainWindow::create_elements( Gst* gst, char* location )
 
     if (!gst->ffmpegcolorspace)
     {
-        GST_DEBUG ("\nCreating ffmpegcolorspace\n");
+        qDebug()<<"\nCreating ffmpegcolorspace";
         gst->ffmpegcolorspace = gst_element_factory_make( "ffmpegcolorspace", "ffmpegcolorspace" );
     }
 
@@ -354,25 +352,26 @@ int MainWindow::create_elements( Gst* gst, char* location )
     encoder = gst_bin_get_by_name (GST_BIN (gst->pipeline), "encoder");
     if (encoder)
     {
-        GST_DEBUG ("\nRemoving encoder\n");
+        qDebug()<<"\nRemoving encoder";
         gst_bin_remove(GST_BIN (gst->pipeline), encoder);
         gst_object_unref (GST_OBJECT (gst->encoder));
     }
 
-    GST_DEBUG ("\nCreating encoder\n");
-    GST_DEBUG ("\nEncoder type in create_elements %s\n", gst->qtVars->encoderType );
+    qDebug()<<"\nCreating encoder";
+    qDebug()<<"\nEncoder type in create_elements "<< gst->qtVars->encoderType;
     if( strcmp( gst->qtVars->encoderType, "Encoder_H264" ) == 0 )
     {
         gst->encoder = gst_element_factory_make( "x264enc",    "encoder" );
     }
     else
     {
+        qDebug()<<"creating x264enc";
         gst->encoder = gst_element_factory_make( "x264enc",    "encoder" );
     }
 
     if (encoder)
     {
-        GST_DEBUG ("\nAdding encoder\n");
+        qDebug()<<"\nAdding encoder";
         gst_bin_add(GST_BIN (gst->pipeline), gst->encoder);
     }
 
@@ -380,19 +379,19 @@ int MainWindow::create_elements( Gst* gst, char* location )
     muxer = gst_bin_get_by_name (GST_BIN (gst->pipeline), "mux");
     if (muxer)
     {
-        GST_DEBUG ("\nRemoving muxer\n");
+        qDebug()<<"\nRemoving muxer";
         gst_bin_remove(GST_BIN (gst->pipeline), muxer);
         gst_object_unref (GST_OBJECT (gst->muxer));
     }
 
-    GST_DEBUG ("\nCreating muxer\n");
+    qDebug()<<"\nCreating muxer";
     if( strcmp( gst->qtVars->containerFormat, "Container_AVI" ) == 0 )
     {
         gst->muxer = gst_element_factory_make( "avimux", "mux" );
     }
     else if( strcmp( gst->qtVars->containerFormat, "Container_mp4" ) == 0 )
     {
-        GST_DEBUG ("\n creating mpeg4mux\n");
+        qDebug()<<"\n creating mpeg4mux";
         gst->muxer = gst_element_factory_make( "mp4mux", "mux" );
     }
     else
@@ -400,23 +399,23 @@ int MainWindow::create_elements( Gst* gst, char* location )
         gst->muxer = gst_element_factory_make( "avimux", "mux" );
     }
 
-    GST_DEBUG ("muxer type in create_elements %s\n", gst_element_get_name(gst->muxer) );
+    qDebug()<<"muxer type in create_elements "<< gst_element_get_name(gst->muxer);
 
     if (encoder)
     {
-        GST_DEBUG ("\nAdding Muxer\n");
+        qDebug()<<"\nAdding Muxer";
         gst_bin_add(GST_BIN (gst->pipeline), gst->muxer);
     }
 
     if (!gst->sink)
     {
-        GST_DEBUG ("\nCreating sink\n");
+        qDebug()<<"\nCreating sink";
         gst->sink = gst_element_factory_make( "filesink", "filesink" );
-        GST_DEBUG ("sink type in create_elements %s\n", gst_element_get_name(gst->sink) );
+        qDebug()<<"sink type in create_elements "<< gst_element_get_name(gst->sink);
 
         /* we set the input filename to the source element */
         g_object_set( G_OBJECT( gst->sink ), "location", gst->fileLocation, NULL );
-        GST_DEBUG ("\nLocation = %s\n",gst->fileLocation);
+        qDebug()<<"\nLocation = "<<gst->fileLocation;
     }
 
     if (!gst->qtVars->fps)
@@ -424,7 +423,7 @@ int MainWindow::create_elements( Gst* gst, char* location )
 
     if (!gst->video_caps)
     {
-        GST_DEBUG ("\nCreating video_caps\n");
+        qDebug()<<"\nCreating video_caps";
         /* Video caps */
         gst->video_caps = gst_caps_new_simple( "video/x-raw-rgb", "framerate", GST_TYPE_FRACTION, gst->qtVars->fps, 1, NULL );
         gst_caps_unref( gst->video_caps );
@@ -445,14 +444,15 @@ int MainWindow::create_elements( Gst* gst, char* location )
     if (gst->qtVars->height)
         g_object_set( G_OBJECT( gst->source ), "height", gst->qtVars->height, NULL );
 
-    GST_DEBUG ("(%dx%d) (%dx%d)",gst->qtVars->topLeftX,gst->qtVars->topLeftY,
-                    gst->qtVars->width,gst->qtVars->height);
+    qDebug()<<"size = "<<gst->qtVars->topLeftX << "X" << gst->qtVars->topLeftY <<
+                    "WH = "<< gst->qtVars->width << "X" <<gst->qtVars->height;
 
     return 0;
 }
 
 int MainWindow::pipeline_make( Gst* gst )
 {
+    gboolean ret = false;
     if (!gst_bin_get_by_name (GST_BIN (gst->pipeline), "filesink"))
     {
         /* Add all elements into the pipeline */
@@ -461,8 +461,18 @@ int MainWindow::pipeline_make( Gst* gst )
     }
 
     /* Link the elements together */
-    gst_element_link_many( gst->source, gst->filter, gst->ffmpegcolorspace,  gst->encoder, gst->muxer, gst->sink, NULL );
+    ret = gst_element_link_many( gst->source, gst->filter, gst->ffmpegcolorspace,  gst->encoder, gst->muxer, gst->sink, NULL );
+    qDebug()<<" linking elements return type = "<<ret;
+    if (ret == false)
+    {
+        ret = gst_element_link( gst->encoder, gst->muxer );
+        qDebug()<<" linking elements return type = "<<ret;
+        ret = gst_element_link( gst->muxer, gst->sink );
+        qDebug()<<" linking elements return type = "<<ret;
+        ret = gst_element_link( gst->ffmpegcolorspace, gst->encoder);
+        qDebug()<<" linking elements return type = "<<ret;
 
+    }
     return 0;
 }
 
@@ -481,7 +491,7 @@ int MainWindow::stop_pipeline( gpointer   data )
     Gst* gst = ( Gst* ) data;
     double difft = 0;
 
-    g_print ("Stop Recording ...\n");
+    g_print ("Stop Recording ...");
 
     /* take the current time end time */
     time (&gst->t_end);
@@ -493,7 +503,6 @@ int MainWindow::stop_pipeline( gpointer   data )
 
     if( state_handler( gst, GST_STATE_NULL) !=0 )
         return -1;
-    g_main_loop_quit ( gst->loop );
     return 0;
 }
 
@@ -528,8 +537,7 @@ int MainWindow::start_pipeline( gpointer   data )
     GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS (GST_BIN(gst->pipeline),
     GST_DEBUG_GRAPH_SHOW_ALL, "gstcapture-1.0-playing");
 
-    g_print ("Start Recording ...\n");
-    g_main_loop_run ( gst->loop);
+    g_print ("Start Recording ...");
 
     return 0;
 }

@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     w.gst->qtVars = new InitQtVariables();
     w.gst->qtVars->encoderType = new char[20];
     w.gst->fileLocation = new char[100];
-    qDebug() << " main filelocation %p" <<w.gst->fileLocation;
+    //qDebug() << " main filelocation %p" <<w.gst->fileLocation;
     w.gst->qtVars->containerFormat = new char[20];
 
     strcpy( w.gst->fileLocation, "D:\\test.avi");
