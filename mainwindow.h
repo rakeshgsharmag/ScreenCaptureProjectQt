@@ -14,6 +14,17 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <iostream>
+#include <cstdio>
+#include <sys/types.h>
+#include <string>
+#include <QCloseEvent>
+
+using namespace std;
+
+#ifndef S_ISDIR
+#define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
+#endif
+
 
 //default values for co-ordinates and frame rate and co-ordinates
 #define MAX_TOP_LEFT_X                1023
@@ -59,22 +70,19 @@ typedef struct
     GstCaps*          video_caps;
     GstBus*           bus;
     guint             bus_watch_id;
-    GObject           *startButton;
-    GObject           *stopButton;
-    GObject           *TimeDisplay;
-    GObject           *TimeRemained;
     char              *fileLocation;
     time_t            t_start, t_end;
     time_t            t_SetTime,t_Rawtime;
     InitQtVariables*  qtVars;
-    char*             command;
+   char*             command;
+   string cmd;
 
     QTimer* timer;
 
 }Gst;
 
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -84,8 +92,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    Gst* gst = NULL;
-    int flag = 1;
+     Gst* gst = NULL;
+     int flag = 1;
+     int stateFlag = 0;
+     struct stat st, st1;
+
+
 
 private slots:
 
@@ -117,6 +129,12 @@ private slots:
     int state_handler( Gst* gst, GstState state );
 
     void showTime();
+
+    void on_lineEdit_5_editingFinished();
+
+    void closeEvent (QCloseEvent *event);
+
+
 
 private:
     Ui::MainWindow *ui;
